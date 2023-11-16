@@ -24,7 +24,7 @@ type CkicpConfig = record {
   sync_interval_secs : nat64;
 };
 type CkicpState = record {
-  next_blocks : vec nat64;
+  next_block : opt nat64;
   tecdsa_signer_address : vec nat8;
   last_block : nat64;
   total_icp_locked : nat64;
