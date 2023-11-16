@@ -37,7 +37,7 @@ pub struct CkicpState {
     pub tecdsa_signer_address: [u8; 20],
     pub total_icp_locked: Amount,
     pub last_block: u64,
-    pub next_blocks: std::collections::VecDeque<u64>,
+    pub next_block: Option<u64>,
 }
 
 #[derive(
@@ -154,13 +154,12 @@ thread_local! {
     // map eventid -> bool
     pub static EVENT_ID_MAP: RefCell<StableBTreeMap<u128, u8, VM>> =
         MEMORY_MANAGER.with(|mm| {
-            RefCell::new(StableBTreeMap::new(mm.borrow().get(EVENT_ID_MAP_MEM_ID)))
+            RefCell::new(StableBTreeMap::init(mm.borrow().get(EVENT_ID_MAP_MEM_ID)))
     });
 
-    // TODO: make this persistent
     pub static DEBUG_LOG: RefCell<Log<String, VM, VM>> =
         MEMORY_MANAGER.with(|mm| {
-            RefCell::new(Log::new(mm.borrow().get(DEBUG_LOG_IDX_ID), mm.borrow().get(DEBUG_LOG_MEM_ID)))
+            RefCell::new(Log::init(mm.borrow().get(DEBUG_LOG_IDX_ID), mm.borrow().get(DEBUG_LOG_MEM_ID)).unwrap())
     });
 
     // TimerId
