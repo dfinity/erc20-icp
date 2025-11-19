@@ -12,6 +12,7 @@ async-trait.workspace = true
 candid.workspace = true
 ciborium.workspace = true
 ethabi.workspace = true
+evm_rpc_types = "3.0.0"
 getrandom = { workspace = true, features = ["custom"] }
 hex.workspace = true
 ic-canister-log.workspace = true

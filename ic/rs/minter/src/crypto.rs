@@ -1,6 +1,6 @@
 use crate::utils::*;
 
-use ic_stable_structures::{BoundedStorable, Storable};
+use ic_stable_structures::{storable::Bound, Storable};
 use k256::ecdsa::VerifyingKey;
 use sha3::Keccak256;
 use std::borrow::Cow;
@@ -14,6 +14,10 @@ pub struct EcdsaSignature {
 }
 
 impl Storable for EcdsaSignature {
+    const BOUND: Bound = Bound::Bounded {
+        max_size: 65,
+        is_fixed_size: true,
+    };
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         let mut bytes = bytes.into_owned();
         let v = bytes.split_off(64);
@@ -25,7 +29,7 @@ impl Storable for EcdsaSignature {
         }
     }
 
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         let mut bytes = Vec::with_capacity(65);
         bytes.extend_from_slice(&self.r);
         bytes.extend_from_slice(&self.s);
@@ -34,10 +38,12 @@ impl Storable for EcdsaSignature {
     }
 }
 
+/*
 impl BoundedStorable for EcdsaSignature {
     const MAX_SIZE: u32 = 65;
     const IS_FIXED_SIZE: bool = true;
 }
+*/
 
 impl std::string::ToString for EcdsaSignature {
     fn to_string(&self) -> String {
