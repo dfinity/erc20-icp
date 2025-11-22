@@ -34,17 +34,6 @@ type Amount = u64;
 type MsgId = u128;
 
 #[derive(CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq)]
-pub enum EthRpcError {
-    NoPermission,
-    TooFewCycles(String),
-    ServiceUrlParseError,
-    ServiceUrlHostMissing,
-    ServiceUrlHostNotAllowed(String),
-    ProviderNotFound,
-    HttpRequestError { code: u32, message: String },
-}
-
-#[derive(CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum ReturnError {
     GenericError,
     InputError,
@@ -56,11 +45,8 @@ pub enum ReturnError {
     EventSeen,
     MemoryError,
     TransferError(String),
-    EthRpcError(EthRpcError),
     EvmRpcError(RpcError),
     EvmRpcInconsistent(String),
-    JsonParseError(String),
-    EventLogError(EventError),
     OutOfMemory,
     MaxResponseBytesExceeded,
     MaxResponseBytesNotEnoughForBlock(u64),
