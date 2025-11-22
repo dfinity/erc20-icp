@@ -38,13 +38,6 @@ impl Storable for EcdsaSignature {
     }
 }
 
-/*
-impl BoundedStorable for EcdsaSignature {
-    const MAX_SIZE: u32 = 65;
-    const IS_FIXED_SIZE: bool = true;
-}
-*/
-
 impl std::string::ToString for EcdsaSignature {
     fn to_string(&self) -> String {
         let mut bytes = Vec::with_capacity(65);
