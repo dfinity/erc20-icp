@@ -140,14 +140,6 @@ pub fn calc_msgid(caller: &Subaccount, nonce: u32) -> u128 {
     id
 }
 
-/*
-pub struct EventEntry {
-    pub event_id: EventId,
-    data: Vec<u8>,
-    topics: Vec<Vec<u8>>,
-}
-*/
-
 #[derive(CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct EventError {
     pub code: Option<u64>,
@@ -179,95 +171,6 @@ pub fn last_block_number_from_event_logs(events: &[LogEntry]) -> Option<u64> {
         .and_then(|entry| entry.block_number.clone())
         .and_then(|block_number| block_number.try_into().ok())
 }
-
-/*
-pub fn read_event_logs(events: &serde_json::Value) -> Result<Vec<EventEntry>, EventError> {
-    if let Some(error) = events
-        .as_object()
-        .and_then(|x| x.get("error"))
-        .and_then(|x| x.as_object())
-    {
-        Err(EventError {
-            code: error.get("code").and_then(|x| x.as_u64()),
-            message: error
-                .get("message")
-                .and_then(|x| x.as_str())
-                .unwrap_or_default()
-                .to_string(),
-        })
-    } else if let Some(results) = events
-        .as_object()
-        .and_then(|x| x.get("result"))
-        .and_then(|x| x.as_array())
-    {
-        let mut entries = Vec::new();
-        for r in results {
-            let block_number = r
-                .as_object()
-                .and_then(|x| x.get("blockNumber"))
-                .and_then(|x| x.as_str())
-                .and_then(hex_decode_0x)
-                .map(|x| {
-                    let mut bytes = [0; 8];
-                    let len = x.len().min(8);
-                    bytes[(8 - len)..].copy_from_slice(&x[(x.len() - len)..]);
-                    u64::from_be_bytes(bytes)
-                });
-            let log_index = r
-                .as_object()
-                .and_then(|x| x.get("logIndex"))
-                .and_then(|x| x.as_str())
-                .and_then(hex_decode_0x)
-                .map(|x| {
-                    let mut bytes = [0; 8];
-                    let len = x.len().min(8);
-                    bytes[(8 - len)..].copy_from_slice(&x[(x.len() - len)..]);
-                    u64::from_be_bytes(bytes)
-                });
-            let data = r
-                .as_object()
-                .and_then(|x| x.get("data"))
-                .and_then(|x| x.as_str())
-                .and_then(hex_decode_0x);
-            let topics = r
-                .as_object()
-                .and_then(|x| x.get("topics"))
-                .and_then(|x| x.as_array())
-                .map(|x| {
-                    x.iter()
-                        .filter_map(|x| x.as_str())
-                        .filter_map(hex_decode_0x)
-                        .collect()
-                });
-            match (block_number, log_index, data, topics) {
-                (Some(block_number), Some(log_index), Some(data), Some(topics)) => {
-                    entries.push(EventEntry {
-                        event_id: EventId {
-                            block_number,
-                            log_index,
-                        },
-                        data,
-                        topics,
-                    })
-                }
-                (None, _, _, _) => {
-                    return Err("No valid 'result.block_number' found in JSON".into())
-                }
-                (_, None, _, _) => {
-                    return Err("No 'result.log_index' found in JSON".into());
-                }
-                (_, _, None, _) => return Err("No valid 'result.data' found in JSON".into()),
-                (_, _, _, None) => {
-                    return Err("No 'result.topics' found in JSON".into());
-                }
-            }
-        }
-        Ok(entries)
-    } else {
-        Err("No 'result' found in JSON".into())
-    }
-}
-*/
 
 pub fn parse_transfer(entry: &LogEntry) -> Result<ethabi::Log, String> {
     use ethabi::*;

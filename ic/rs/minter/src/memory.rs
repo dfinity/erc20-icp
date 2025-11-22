@@ -80,13 +80,6 @@ impl Storable for MintState {
     }
 }
 
-/*
-impl BoundedStorable for MintState {
-    const MAX_SIZE: u32 = 1;
-    const IS_FIXED_SIZE: bool = true;
-}
-*/
-
 #[derive(Clone, CandidType, serde::Serialize, serde::Deserialize)]
 pub struct MintStatus {
     pub amount: Amount,
@@ -108,13 +101,6 @@ impl Storable for MintStatus {
         Cow::Owned(Encode!(self).unwrap())
     }
 }
-
-/*
-impl BoundedStorable for MintStatus {
-    const MAX_SIZE: u32 = 90;
-    const IS_FIXED_SIZE: bool = false;
-}
-*/
 
 const CKICP_CONFIG_SIZE: u64 = 512;
 const CKICP_STATE_SIZE: u64 = 256;
