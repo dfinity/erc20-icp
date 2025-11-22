@@ -7,28 +7,12 @@
       "optimize": "size"
     },
     "ledger": {
-      "type": "custom",
-      "wasm": "",
-      "candid": "icp-ledger.did",
-      "remote": {
-        "candid": "icp-ledger.did",
-        "id": {
-          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai",
-          "local": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-        }
-      }
+      "type": "pull",
+      "id": "ryjl3-tyaaa-aaaaa-aaaba-cai"
     },
-    "ethrpc": {
-      "type": "custom",
-      "wasm": "",
-      "candid": "ic-eth-rpc.did",
-      "remote": {
-        "candid": "ic-eth-rpc.did",
-        "id": {
-          "ic": "zdciv-4iaaa-aaaab-aadoa-cai",
-          "local": "bw4dl-smaaa-aaaaa-qaacq-cai"
-        }
-      }
+    "evm_rpc": {
+      "type": "pull",
+      "id": "7hfb6-caaaa-aaaar-qadga-cai"
     }
   },
   "output_env_file": ".env",

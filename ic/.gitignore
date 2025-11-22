@@ -138,3 +138,5 @@ user.bazelrc
 
 **/.env
 **/.dfx
+
+deps/

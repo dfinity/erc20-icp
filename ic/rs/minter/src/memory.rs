@@ -1,7 +1,7 @@
 use candid::{CandidType, Decode, Encode, Principal};
 use ic_stable_structures::memory_manager::MemoryId;
-use ic_stable_structures::DefaultMemoryImpl;
-use ic_stable_structures::{BoundedStorable, Log, StableBTreeMap, StableCell, Storable};
+use ic_stable_structures::storable::Bound;
+use ic_stable_structures::{DefaultMemoryImpl, Log, StableBTreeMap, StableCell, Storable};
 use rustic::memory_map::MEMORY_MANAGER;
 use rustic::types::{Cbor, RM, VM};
 use std::borrow::Cow;
@@ -53,6 +53,11 @@ pub enum MintState {
 }
 
 impl Storable for MintState {
+    const BOUND: Bound = Bound::Bounded {
+        max_size: 1,
+        is_fixed_size: true,
+    };
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         match bytes[0] {
             0 => MintState::Init,
@@ -64,7 +69,7 @@ impl Storable for MintState {
         }
     }
 
-    fn to_bytes(&self) -> Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
         Cow::Owned(vec![match self {
             MintState::Init => 0,
             MintState::FundReceived => 1,
@@ -75,11 +80,6 @@ impl Storable for MintState {
     }
 }
 
-impl BoundedStorable for MintState {
-    const MAX_SIZE: u32 = 1;
-    const IS_FIXED_SIZE: bool = true;
-}
-
 #[derive(Clone, CandidType, serde::Serialize, serde::Deserialize)]
 pub struct MintStatus {
     pub amount: Amount,
@@ -88,18 +88,18 @@ pub struct MintStatus {
 }
 
 impl Storable for MintStatus {
+    const BOUND: Bound = Bound::Bounded {
+        max_size: 90,
+        is_fixed_size: false,
+    };
+
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         Decode!(bytes.as_ref(), Self).unwrap()
     }
 
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+    fn to_bytes(&self) -> std::borrow::Cow<'_, [u8]> {
         Cow::Owned(Encode!(self).unwrap())
     }
-}
-
-impl BoundedStorable for MintStatus {
-    const MAX_SIZE: u32 = 90;
-    const IS_FIXED_SIZE: bool = false;
 }
 
 const CKICP_CONFIG_SIZE: u64 = 512;
